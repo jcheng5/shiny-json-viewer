@@ -77,7 +77,7 @@ const JSONNode: React.FC<JSONNodeProps> = ({
               onClick={toggle}
               style={nodeIndentStyle}
             >
-              <span className="text-purple-600">{name}: </span>
+              {!isRoot && <span className="text-purple-600">{name}: </span>}
               <span className="text-gray-600">
                 [{isExpanded ? "" : `...${data.length} items`}]
               </span>
@@ -107,7 +107,7 @@ const JSONNode: React.FC<JSONNodeProps> = ({
         if (data === null) {
           return (
             <div style={nodeIndentStyle} className="py-1">
-              <span className="text-purple-600">{name}: </span>
+              {!isRoot && <span className="text-purple-600">{name}: </span>}
               <span className="text-gray-800">null</span>
             </div>
           );
@@ -122,7 +122,7 @@ const JSONNode: React.FC<JSONNodeProps> = ({
               onClick={toggle}
               style={nodeIndentStyle}
             >
-              <span className="text-purple-600">{name}: </span>
+              {!isRoot && <span className="text-purple-600">{name}: </span>}
               <span className="text-gray-600">
                 {"{"}
                 {isExpanded ? "" : "..."}
