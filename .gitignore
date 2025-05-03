@@ -1,0 +1,4 @@
+node_modules/
+dist/
+src/json-viewer.css
+src/JSONViewer.js

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JSON Viewer Test</title>
+    <link rel="stylesheet" href="dist/json-viewer.css" />
+    <script src="dist/json-viewer.js"></script>
+  </head>
+  <body>
+    <json-viewer data='{"example": "data"}'></json-viewer>
+    <script>
+      const sampleData = {
+        id: 1,
+        name: "Sample JSON",
+        active: true,
+        details: {
+          description: "This is a sample JSON for demonstration",
+          longText:
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n\n"This is a quoted section with "nested quotes" inside it."\n\nSed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n\n"Another quoted section."\n\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'.repeat(
+              10
+            ),
+          stats: [1, 2, 3, 4, 5],
+          nested: {
+            level1: {
+              level2: {
+                level3: {
+                  deep: "You've gone too deep!",
+                },
+              },
+            },
+          },
+        },
+        tags: ["json", "viewer", "react", "component"],
+        nullValue: null,
+      };
+      document
+        .getElementsByTagName("json-viewer")[0]
+        .setAttribute("data", JSON.stringify(sampleData));
+    </script>
+  </body>
+</html>
