@@ -2,6 +2,8 @@
 
 Shiny JSON Preview is a very basic React-based JSON viewer component that allows users to explore JSON data in a structured and interactive way. It supports nested objects, arrays, and long strings with features like expand/collapse and string previews.
 
+<img src="screenshot.png" alt="Shiny JSON Preview Screenshot" width="789" height="487"/>
+
 ## Features
 
 - **Expandable Nodes**: Expand or collapse JSON objects and arrays for better navigation.
