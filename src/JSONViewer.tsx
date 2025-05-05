@@ -30,7 +30,13 @@ const JSONNode: React.FC<JSONNodeProps> = ({
   level,
   isRoot = false,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(isRoot);
+  const [isExpanded, setIsExpanded] = useState(
+    isRoot ||
+      (Array.isArray(data) && data.length <= 2) ||
+      (typeof data === "object" &&
+        data !== null &&
+        Object.keys(data).length <= 2)
+  );
   const [isFullStringVisible, setIsFullStringVisible] = useState(false);
 
   const toggle = useCallback(() => {
