@@ -290,20 +290,6 @@ const sampleData = {
   nullValue: null,
 };
 
-// Usage example with the sample data
-const JSONViewerApp = ({ jsonData = sampleData }) => {
-  const [data, setData] = useState(jsonData);
-
-  // You can implement a function to load external JSON here
-
-  return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">JSON Viewer</h2>
-      <JSONViewer data={data} />
-    </div>
-  );
-};
-
 // Create and export the web component
 class JSONViewerElement extends HTMLElement {
   _shadowRoot: ShadowRoot;
@@ -346,3 +332,6 @@ class JSONViewerElement extends HTMLElement {
 
 // Register the web component
 customElements.define("json-viewer", JSONViewerElement);
+
+export default JSONViewer;
+export { JSONViewer, JSONNode, JSONViewerElement };
