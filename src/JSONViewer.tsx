@@ -5,9 +5,10 @@ import ReactDOM from "react-dom/client";
 
 interface JSONNodeProps {
   data: any;
-  name: string;
+  name: string | null;
   level: number;
   isRoot?: boolean;
+  isLast: boolean;
 }
 
 interface JSONViewerProps {
@@ -18,7 +19,7 @@ interface JSONViewerProps {
 const JSONViewer: React.FC<JSONViewerProps> = ({ data }) => {
   return (
     <div className="overflow-auto max-h-screen border border-gray-300 rounded p-4 font-mono text-sm bg-gray-50">
-      <JSONNode data={data} name="root" level={0} isRoot={true} />
+      <JSONNode data={data} name="root" level={0} isRoot={true} isLast={true} />
     </div>
   );
 };
@@ -29,6 +30,7 @@ const JSONNode: React.FC<JSONNodeProps> = ({
   name,
   level,
   isRoot = false,
+  isLast,
 }) => {
   const [isExpanded, setIsExpanded] = useState(
     isRoot ||
@@ -72,6 +74,15 @@ const JSONNode: React.FC<JSONNodeProps> = ({
     return typeof str === "string" && str.length > 100;
   }, []);
 
+  const nameLabel =
+    !isRoot && name !== null ? (
+      <span className="text-purple-600">{name}: </span>
+    ) : null;
+
+  const trailingComma = (
+    <span className="text-gray-600">{isLast ? "" : ","}</span>
+  );
+
   // Component content based on data type
   const renderContent = () => {
     switch (type) {
@@ -83,14 +94,16 @@ const JSONNode: React.FC<JSONNodeProps> = ({
               onClick={toggle}
               style={nodeIndentStyle}
             >
-              {!isRoot && <span className="text-purple-600">{name}: </span>}
-              <span className="text-gray-600">
-                [{isExpanded ? "" : `...${data.length} items`}]
-              </span>
+              {/* Show the name with a colon only if it's part of an object */}
+              {nameLabel}
+              <span className="text-gray-600">[{isExpanded ? "" : `...]`}</span>
               {!isExpanded && (
-                <span className="ml-1 text-gray-400 text-xs">
-                  ({data.length} items)
-                </span>
+                <>
+                  {trailingComma}
+                  <span className="ml-1 text-gray-400 text-xs">
+                    ({data.length} items)
+                  </span>
+                </>
               )}
             </div>
 
@@ -100,10 +113,14 @@ const JSONNode: React.FC<JSONNodeProps> = ({
                   <JSONNode
                     key={index}
                     data={item}
-                    name={index.toString()}
+                    name={null} // Pass an empty name for list elements
                     level={level + 1}
+                    isLast={index === data.length - 1}
                   />
                 ))}
+                <span className="text-gray-600" style={nodeIndentStyle}>
+                  ]{trailingComma}
+                </span>
               </div>
             )}
           </>
@@ -113,7 +130,7 @@ const JSONNode: React.FC<JSONNodeProps> = ({
         if (data === null) {
           return (
             <div style={nodeIndentStyle} className="py-1">
-              {!isRoot && <span className="text-purple-600">{name}: </span>}
+              {nameLabel}
               <span className="text-gray-800">null</span>
             </div>
           );
@@ -128,16 +145,18 @@ const JSONNode: React.FC<JSONNodeProps> = ({
               onClick={toggle}
               style={nodeIndentStyle}
             >
-              {!isRoot && <span className="text-purple-600">{name}: </span>}
+              {nameLabel}
               <span className="text-gray-600">
                 {"{"}
-                {isExpanded ? "" : "..."}
-                {"}"}
+                {isExpanded ? "" : "...}"}
               </span>
               {!isExpanded && (
-                <span className="ml-1 text-gray-400 text-xs">
-                  ({keys.length} properties)
-                </span>
+                <>
+                  {trailingComma}
+                  <span className="ml-1 text-gray-400 text-xs">
+                    ({keys.length} properties)
+                  </span>
+                </>
               )}
             </div>
 
@@ -147,10 +166,15 @@ const JSONNode: React.FC<JSONNodeProps> = ({
                   <JSONNode
                     key={key}
                     data={data[key]}
-                    name={key}
+                    name={key} // Ensure keys are shown for object properties
                     level={level + 1}
+                    isLast={key === keys[keys.length - 1]}
                   />
                 ))}
+                <span className="text-gray-600" style={nodeIndentStyle}>
+                  {"}"}
+                  {trailingComma}
+                </span>
               </div>
             )}
           </>
@@ -161,7 +185,7 @@ const JSONNode: React.FC<JSONNodeProps> = ({
           // For very long strings
           return (
             <div className="hover:bg-gray-200 py-1" style={nodeIndentStyle}>
-              <span className="text-purple-600">{name}: </span>
+              {nameLabel}
               {!isFullStringVisible ? (
                 <span>
                   <span className="cursor-pointer group relative text-green-600">
@@ -183,18 +207,18 @@ const JSONNode: React.FC<JSONNodeProps> = ({
                       </span>
                     </span>
                   </span>
-
+                  {trailingComma}
                   <a
                     href="#"
                     className="ml-2 text-blue-500 hover:text-blue-700 hover:underline"
                     onClick={toggleStringView}
                   >
-                    Show All
+                    Expand
                   </a>
                 </span>
               ) : (
-                <div className="block">
-                  <div className="flex justify-between items-center mb-2">
+                <>
+                  <span className="mb-2">
                     <a
                       href="#"
                       className="text-blue-500 hover:text-blue-700 hover:underline"
@@ -202,18 +226,22 @@ const JSONNode: React.FC<JSONNodeProps> = ({
                     >
                       Collapse
                     </a>
+                  </span>
+
+                  <div className="block">
+                    <pre
+                      className="text-green-600 whitespace-pre-wrap break-all"
+                      style={{
+                        maxHeight: "400px",
+                        overflowY: "auto",
+                        maxWidth: "80vw",
+                      }}
+                    >
+                      "{data}"
+                    </pre>
+                    {trailingComma}
                   </div>
-                  <pre
-                    className="text-green-600 whitespace-pre-wrap break-all"
-                    style={{
-                      maxHeight: "400px",
-                      overflowY: "auto",
-                      maxWidth: "80vw",
-                    }}
-                  >
-                    "{data}"
-                  </pre>
-                </div>
+                </>
               )}
             </div>
           );
@@ -221,8 +249,9 @@ const JSONNode: React.FC<JSONNodeProps> = ({
           // For normal strings
           return (
             <div style={nodeIndentStyle} className="py-1">
-              <span className="text-purple-600">{name}: </span>
+              {nameLabel}
               <span className="text-green-600">"{data}"</span>
+              {trailingComma}
             </div>
           );
         }
@@ -230,32 +259,36 @@ const JSONNode: React.FC<JSONNodeProps> = ({
       case "number":
         return (
           <div style={nodeIndentStyle} className="py-1">
-            <span className="text-purple-600">{name}: </span>
+            {nameLabel}
             <span className="text-blue-600">{data}</span>
+            {trailingComma}
           </div>
         );
 
       case "boolean":
         return (
           <div style={nodeIndentStyle} className="py-1">
-            <span className="text-purple-600">{name}: </span>
+            {nameLabel}
             <span className="text-orange-600">{data.toString()}</span>
+            {trailingComma}
           </div>
         );
 
       case "null":
         return (
           <div style={nodeIndentStyle} className="py-1">
-            <span className="text-purple-600">{name}: </span>
+            {nameLabel}
             <span className="text-gray-600">null</span>
+            {trailingComma}
           </div>
         );
 
       default:
         return (
           <div style={nodeIndentStyle} className="py-1">
-            <span className="text-purple-600">{name}: </span>
+            {nameLabel}
             <span className="text-gray-600">{String(data)}</span>
+            {trailingComma}
           </div>
         );
     }
