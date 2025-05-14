@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useMemo } from "react";
-import r2wc from "@r2wc/react-to-web-component";
 import tailwindStyles from "./json-viewer.css";
 import ReactDOM from "react-dom/client";
 

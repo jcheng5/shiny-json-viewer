@@ -86,8 +86,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Contributing
 
 Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
-
-## Acknowledgments
-
-- Built with [React](https://reactjs.org/) and [Tailwind CSS](https://tailwindcss.com/).
-- Web component support powered by [@r2wc/react-to-web-component](https://github.com/r2wc/r2wc).
